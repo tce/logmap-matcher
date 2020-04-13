@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.formats.RDFXMLDocumentFormat;
 import org.semanticweb.owlapi.model.IRI;
@@ -332,30 +333,30 @@ public class OntologyModuleExtractor implements OntologySegmenter {
 		
 		if (considerEntityAnnotations){
 			
-			for (OWLClass cls : ontology.getClassesInSignature(imports)){
-				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(cls, ontology));
+			for (OWLClass cls : ontology.classesInSignature(imports).collect(Collectors.toList())){
+				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(cls, ontology).collect(Collectors.toList()));
 				//axioms.addAll(ontology.getDeclarationAxioms(cls));
 				
 			}
 			
-			for (OWLObjectProperty oprop : ontology.getObjectPropertiesInSignature(imports)){
-				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(oprop, ontology));
+			for (OWLObjectProperty oprop : ontology.objectPropertiesInSignature(imports).collect(Collectors.toList())){
+				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(oprop, ontology).collect(Collectors.toList()));
 				//axioms.addAll(ontology.getDeclarationAxioms(oprop));
 			}
 			
-			for (OWLDataProperty dprop : ontology.getDataPropertiesInSignature(imports)){
-				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(dprop, ontology));
+			for (OWLDataProperty dprop : ontology.dataPropertiesInSignature(imports).collect(Collectors.toList())){
+				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(dprop, ontology).collect(Collectors.toList()));
 				//axioms.addAll(ontology.getDeclarationAxioms(dprop));
 			}
 			
-			for (OWLAnnotationProperty aprop : ontology.getAnnotationPropertiesInSignature()){
-				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(aprop, ontology));
+			for (OWLAnnotationProperty aprop : ontology.annotationPropertiesInSignature().collect(Collectors.toList())){
+				axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(aprop, ontology).collect(Collectors.toList()));
 				//axioms.addAll(ontology.getDeclarationAxioms(aprop));
 			}
 			
 			if (!ignoreAssertions){
-				for (OWLNamedIndividual indiv : ontology.getIndividualsInSignature(imports)){
-					axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(indiv, ontology));
+				for (OWLNamedIndividual indiv : ontology.individualsInSignature(imports).collect(Collectors.toList())){
+					axioms.addAll(EntitySearcher.getAnnotationAssertionAxioms(indiv, ontology).collect(Collectors.toList()));
 					//axioms.addAll(ontology.getDeclarationAxioms(indiv));
 				}
 				

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -310,7 +311,7 @@ public class OntologyProcessing4Overlapping {
 		
 		
 		//We look for label first
-		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(cls, onto)){
+		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(cls, onto).collect(Collectors.toList())){
 					
 			if (annAx.getAnnotation().getProperty().getIRI().toString().equals(rdf_label_uri) ||
 					annAx.getAnnotation().getProperty().getIRI().toString().equals(synonym_iri)){
@@ -349,7 +350,7 @@ public class OntologyProcessing4Overlapping {
 			Set<String> labels = new HashSet<String>();
 			
 			//All labels
-			for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(cls, onto)){
+			for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(cls, onto).collect(Collectors.toList())){
 				
 				
 				labels.addAll(annotationExtractor.getAnntotationString(annAx, onto, onto.getOWLOntologyManager().getOWLDataFactory()));				
@@ -425,7 +426,6 @@ public class OntologyProcessing4Overlapping {
 	/**
 	 * Creates entry in exact occurrences map and adds label to class index
 	 * @param cls
-	 * @param ident
 	 * @return
 	 */
 	private List<String> extractCleanLabel4OWLCls(OWLClass cls){
@@ -439,7 +439,7 @@ public class OntologyProcessing4Overlapping {
 		
 		
 		//We look for label first
-		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(cls, onto)){
+		for (OWLAnnotationAssertionAxiom annAx : EntitySearcher.getAnnotationAssertionAxioms(cls, onto).collect(Collectors.toList())){
 			
 			if (annAx.getAnnotation().getProperty().getIRI().toString().equals(rdf_label_uri)){
 				

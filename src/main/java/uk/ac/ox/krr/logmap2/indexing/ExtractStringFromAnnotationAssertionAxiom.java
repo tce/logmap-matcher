@@ -2,6 +2,7 @@ package uk.ac.ox.krr.logmap2.indexing;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -203,7 +204,7 @@ public class ExtractStringFromAnnotationAssertionAxiom {
 			namedIndiv=datafactory.getOWLNamedIndividual(namedIndivIRI);
 			
 			
-			for (OWLAnnotationAssertionAxiom annIdiv : EntitySearcher.getAnnotationAssertionAxioms(namedIndiv, onto)){
+			for (OWLAnnotationAssertionAxiom annIdiv : EntitySearcher.getAnnotationAssertionAxioms(namedIndiv, onto).collect(Collectors.toList())){
 				
 				
 				if (annIdiv.getAnnotation().getProperty().getIRI().toString().equals(rdf_label_uri)){
@@ -237,7 +238,7 @@ public class ExtractStringFromAnnotationAssertionAxiom {
 			
 			//for (OWLAnnotation indivAnn : namedIndiv.getAnnotations(onto)){
 			for (OWLLiteral literal_syn : Searcher.values(
-					onto.getDataPropertyAssertionAxioms(namedIndiv), datafactory.getOWLDataProperty(IRI.create(fma_name_uri)))){ 
+					onto.dataPropertyAssertionAxioms(namedIndiv), datafactory.getOWLDataProperty(IRI.create(fma_name_uri))).collect(Collectors.toList())){
 				
 			
 				return literal_syn.getLiteral().toLowerCase();
@@ -257,7 +258,7 @@ public class ExtractStringFromAnnotationAssertionAxiom {
 	/**
 	 * We deal with some definitions. Long ones are discarded.
 	 * We also process translated annotations
-	 * @param def
+	 * @param label
 	 * @return
 	 */
 	private Set<String> processLongLabels(String label){

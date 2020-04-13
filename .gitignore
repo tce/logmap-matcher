@@ -2,3 +2,6 @@
 .settings/
 /target/
 /test-classes/
+/.idea
+/.DS_Store
+/logmap-matcher.iml

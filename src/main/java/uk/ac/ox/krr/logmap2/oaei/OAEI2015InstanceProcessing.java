@@ -3,15 +3,10 @@ package uk.ac.ox.krr.logmap2.oaei;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.search.Searcher;
 
 import uk.ac.ox.krr.logmap2.io.LogOutput;
@@ -37,7 +32,9 @@ public class OAEI2015InstanceProcessing {
 				getOWLDataProperty(IRI.create("http://islab.di.unimi.it/imoaei2015#publication_count"));
 		
 		//Set<OWLIndividual> publications = indiv.getObjectPropertyValues(author_of, onto);
-		Collection<OWLIndividual> publications = Searcher.values(onto.getObjectPropertyAssertionAxioms(indiv), author_of);
+//		Set<OWLObjectPropertyAssertionAxiom> objectPropertyAssertionAxioms = onto.getObjectPropertyAssertionAxioms(indiv);
+		Stream<OWLObjectPropertyAssertionAxiom> axioms = onto.objectPropertyAssertionAxioms(indiv);
+		Collection<OWLIndividual> publications = Searcher.values(axioms, author_of).collect(Collectors.toList());
 		
 		Collection<OWLLiteral> data_values;
 		
@@ -50,7 +47,8 @@ public class OAEI2015InstanceProcessing {
 			for (OWLIndividual pub : publications){
 				
 				//data_values = pub.getDataPropertyValues(publication_count, onto);
-				data_values = Searcher.values(onto.getDataPropertyAssertionAxioms(pub), publication_count);
+
+				data_values = Searcher.values(onto.dataPropertyAssertionAxioms(pub), publication_count).collect(Collectors.toList());
 				
 				for (OWLLiteral value : data_values){
 					//if (value.isInteger()){
@@ -82,7 +80,7 @@ public class OAEI2015InstanceProcessing {
 				getOWLDataProperty(IRI.create("http://islab.di.unimi.it/imoaei2015#sum_of_citations"));
 		
 		//Set<OWLIndividual> publications = indiv.getObjectPropertyValues(author_of, onto);
-		Collection<OWLIndividual> publications = Searcher.values(onto.getObjectPropertyAssertionAxioms(indiv), author_of);
+		Collection<OWLIndividual> publications = Searcher.values(onto.objectPropertyAssertionAxioms(indiv), author_of).collect(Collectors.toList());
 		Collection<OWLLiteral> data_values;
 		
 		try {
@@ -97,7 +95,7 @@ public class OAEI2015InstanceProcessing {
 				
 				//Grouped citations: publications report
 				//data_values = pub.getDataPropertyValues(sum_of_citations, onto);				
-				data_values = Searcher.values(onto.getDataPropertyAssertionAxioms(pub), sum_of_citations);
+				data_values = Searcher.values(onto.dataPropertyAssertionAxioms(pub), sum_of_citations).collect(Collectors.toList());
 				for (OWLLiteral value : data_values){
 					//if (value.isInteger()){
 						return value.parseInteger();
@@ -107,7 +105,7 @@ public class OAEI2015InstanceProcessing {
 				
 				//We sum num citations in each publication
 				//data_values = pub.getDataPropertyValues(citations, onto);
-				data_values = Searcher.values(onto.getDataPropertyAssertionAxioms(pub), citations);
+				data_values = Searcher.values(onto.dataPropertyAssertionAxioms(pub), citations).collect(Collectors.toList());
 				for (OWLLiteral value : data_values){
 					//if (value.isInteger()){
 						num_citations += value.parseInteger();
@@ -140,7 +138,7 @@ public class OAEI2015InstanceProcessing {
 				getOWLDataProperty(IRI.create("http://islab.di.unimi.it/imoaei2015#year"));
 										       
 		//Set<OWLIndividual> publications = indiv.getObjectPropertyValues(author_of, onto);
-		Collection<OWLIndividual> publications = Searcher.values(onto.getObjectPropertyAssertionAxioms(indiv), author_of);
+		Collection<OWLIndividual> publications = Searcher.values(onto.objectPropertyAssertionAxioms(indiv), author_of).collect(Collectors.toList());
 		Collection<OWLLiteral> data_values;
 		
 		
@@ -156,7 +154,7 @@ public class OAEI2015InstanceProcessing {
 				
 				//Grouped citations: publications report
 				//data_values = pub.getDataPropertyValues(active_from, onto);
-				data_values = Searcher.values(onto.getDataPropertyAssertionAxioms(pub), active_from);
+				data_values = Searcher.values(onto.dataPropertyAssertionAxioms(pub), active_from).collect(Collectors.toList());
 
 				for (OWLLiteral value : data_values){
 					return value.parseInteger();					
@@ -165,7 +163,8 @@ public class OAEI2015InstanceProcessing {
 				
 				//We sum num citations in each publication
 				//data_values = pub.getDataPropertyValues(year, onto);		
-				data_values = Searcher.values(onto.getDataPropertyAssertionAxioms(pub), year);
+				data_values = Searcher.values(onto.dataPropertyAssertionAxioms(pub), year).collect(Collectors.toList());
+
 
 				for (OWLLiteral value : data_values){
 					if (value.parseInteger()<output_year)
